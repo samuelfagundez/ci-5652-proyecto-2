@@ -1,0 +1,16 @@
+{
+	"name": "2nd_delivery",
+	"version": "1.0.0",
+	"main": "./src/index.ts",
+	"license": "MIT",
+	"scripts": {
+		"tabu": "ts-node ./src/tabuSearch.ts",
+		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
+	},
+	"dependencies": {
+		"@types/node": "^17.0.21",
+		"fs": "^0.0.1-security",
+		"ts-node": "^10.5.0",
+		"typescript": "^4.5.5"
+	}
+}
