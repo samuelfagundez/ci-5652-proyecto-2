@@ -8,6 +8,7 @@
 		"exacta": "ts-node ./src/solExacta.ts",
 		"exactaDP": "ts-node ./src/solExactaDP.ts",
 		"busquedaLocal": "ts-node ./src/busquedaLocal.ts",
+		"ILS": "ts-node ./src/ILS.ts",
 		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
 	},
 	"dependencies": {
