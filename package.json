@@ -5,6 +5,9 @@
 	"license": "MIT",
 	"scripts": {
 		"tabu": "ts-node ./src/tabuSearch.ts",
+		"exacta": "ts-node ./src/solExacta.ts",
+		"exactaDP": "ts-node ./src/solExactaDP.ts",
+		"busquedaLocal": "ts-node ./src/busquedaLocal.ts",
 		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
 	},
 	"dependencies": {
