@@ -9,6 +9,7 @@
 		"exactaDP": "ts-node ./src/solExactaDP.ts",
 		"busquedaLocal": "ts-node ./src/busquedaLocal.ts",
 		"ILS": "ts-node ./src/ILS.ts",
+		"genetic": "ts-node ./src/GA/main.ts",
 		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
 	},
 	"dependencies": {

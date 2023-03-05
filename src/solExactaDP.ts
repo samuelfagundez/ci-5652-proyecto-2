@@ -1,23 +1,11 @@
+import { example1 } from './data';
 const PESO_LIMITE_MOCHILA: number = 30;
-
-type Mochila = {
-  peso_total: number;
-  valor_total: number;
-  objetos_seleccionados: Set<Objeto>;
-  objetos_remanentes: Set<Objeto>;
-};
 
 type Objeto = {
   id: string;
   peso: number;
   valor: number;
 };
-
-const elementosDisponibles4: Objeto[] = [
-  { id: " test1", peso: 10, valor: 60 },
-  { id: " test2", peso: 20, valor: 100 },
-  { id: " test3", peso: 30, valor: 120 },
-];
 
 function knapSack(objetos: Objeto[]) {
   const beneficio = objetos.map((obj) => obj.valor);
@@ -36,4 +24,4 @@ function knapSack(objetos: Objeto[]) {
   return dp[pesoLimite]; // returning the maximum value of knapsack
 }
 
-console.log(knapSack(elementosDisponibles4));
+console.log(knapSack(example1));
