@@ -10,6 +10,7 @@
 		"busquedaLocal": "ts-node ./src/busquedaLocal.ts",
 		"ILS": "ts-node ./src/ILS.ts",
 		"genetic": "ts-node ./src/GA/main.ts",
+		"benchmark": "ts-node ./src/benchmark.ts",
 		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
 	},
 	"dependencies": {

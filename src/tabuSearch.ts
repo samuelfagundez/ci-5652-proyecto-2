@@ -1,6 +1,4 @@
-import { example1 } from './data';
-
-const PESO_LIMITE_MOCHILA: number = 30;
+import { Objeto } from './models';
 
 // This algorithm takes as input the weights and values of each item, the capacity of the knapsack,
 // and the maximum number of iterations to run. It returns an object containing the solution with the
@@ -26,12 +24,21 @@ const PESO_LIMITE_MOCHILA: number = 30;
  * @param capacity The capacity of the knapsack.
  * @param maxIter The maximum number of iterations to run.
  */
-function TS(weights: number[], values: number[], maxIter: number) {
+export function TS(
+  data: Objeto[],
+  maxIter: number,
+  PESO_LIMITE_MOCHILA: number
+): {
+  solution: { value: number; weight: number };
+} {
+  const weights = data.map((obj) => obj.peso);
+  const values = data.map((obj) => obj.valor);
   const n = weights.length;
-  let bestSolution = new Array(n).fill(0);
   let bestValue = 0;
+  let bestWeight = 0;
   let currentSolution = new Array(n).fill(0);
   let currentValue = 0;
+  let currentWeight = 0;
   let tabuList: number[] = [];
 
   for (let i = 0; i < maxIter; i++) {
@@ -47,6 +54,7 @@ function TS(weights: number[], values: number[], maxIter: number) {
 
     // Evaluate all neighbors and select the best one that does not exceed the capacity.
     let bestNeighborValue = -1;
+    let bestNeighborWeight = -1;
     let bestNeighbor;
     for (const neighbor of neighbors) {
       const weightSum = neighbor.reduce(
@@ -60,6 +68,7 @@ function TS(weights: number[], values: number[], maxIter: number) {
         );
         if (valueSum > bestNeighborValue) {
           bestNeighborValue = valueSum;
+          bestNeighborWeight = weightSum;
           bestNeighbor = neighbor.slice();
         }
       }
@@ -71,11 +80,12 @@ function TS(weights: number[], values: number[], maxIter: number) {
     // Update the current solution and add it to the tabu list.
     currentSolution = bestNeighbor.slice();
     currentValue = bestNeighborValue;
+    currentWeight = bestNeighborWeight;
 
     // Update the global solution if necessary.
     if (currentValue > bestValue) {
-      bestSolution = currentSolution.slice();
       bestValue = currentValue;
+      bestWeight = currentWeight;
     }
 
     // Add the flipped item to the tabu list and remove old items from it.
@@ -84,14 +94,5 @@ function TS(weights: number[], values: number[], maxIter: number) {
       tabuList.shift();
     }
   }
-
-  return { solution: bestSolution, value: bestValue };
+  return { solution: { weight: bestWeight, value: bestValue } };
 }
-
-const main = () => {
-  const pesos = example1.map((obj) => obj.peso);
-  const ganancias = example1.map((obj) => obj.valor);
-  console.log(TS(pesos, ganancias, 10000));
-};
-
-main();

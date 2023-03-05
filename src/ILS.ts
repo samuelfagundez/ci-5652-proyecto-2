@@ -1,6 +1,5 @@
-import { example1 } from './data';
-
-const PESO_LIMITE_MOCHILA: number = 30;
+import { example1 as data } from './data';
+import { Objeto } from './models';
 
 // This algorithm takes as input the weights and values of each item, the capacity of the knapsack, and
 // the maximum number of iterations to run. It returns an object containing the solution with the
@@ -25,10 +24,19 @@ const PESO_LIMITE_MOCHILA: number = 30;
  * @param values The values of each item.
  * @param maxIter The maximum number of iterations to run.
  */
-function ILS(weights: number[], values: number[], maxIter: number) {
+export function ILS(
+  data: Objeto[],
+  maxIter: number,
+  PESO_LIMITE_MOCHILA: number
+): {
+  solution: { value: number; weight: number };
+} {
+  const weights = data.map((obj) => obj.peso);
+  const values = data.map((obj) => obj.valor);
   const n = weights.length;
   let bestSolution = new Array(n).fill(0);
   let bestValue = 0;
+  let bestWeight = 0;
 
   for (let i = 0; i < maxIter; i++) {
     // Generate a random initial solution.
@@ -37,7 +45,12 @@ function ILS(weights: number[], values: number[], maxIter: number) {
       .map(() => Math.round(Math.random()));
 
     // Perform local search on the initial solution with disturbance
-    let currentValue = evaluateSolution(currentSolution, weights, values);
+    let currentSol = evaluateSolution(
+      currentSolution,
+      weights,
+      values,
+      PESO_LIMITE_MOCHILA
+    );
     while (true) {
       const neighbors = [];
       for (let j = 0; j < n; j++) {
@@ -49,23 +62,29 @@ function ILS(weights: number[], values: number[], maxIter: number) {
       let bestNeighborValue = -1;
       let bestNeighbor;
       for (const neighbor of neighbors) {
-        const valueSum = evaluateSolution(neighbor, weights, values);
-        if (valueSum > bestNeighborValue) {
-          bestNeighborValue = valueSum;
+        const newSolution = evaluateSolution(
+          neighbor,
+          weights,
+          values,
+          PESO_LIMITE_MOCHILA
+        );
+        if (newSolution.value > bestNeighborValue) {
+          bestNeighborValue = newSolution.value;
           bestNeighbor = neighbor.slice();
         }
       }
 
-      if (!bestNeighbor || bestNeighborValue <= currentValue) break;
+      if (!bestNeighbor || bestNeighborValue <= currentSol.value) break;
 
       currentSolution.splice(0, currentSolution.length, ...bestNeighbor);
-      currentValue = bestNeighborValue;
+      currentSol.value = bestNeighborValue;
     }
 
     // Update the global solution if necessary.
-    if (currentValue > bestValue) {
+    if (currentSol.value > bestValue) {
       bestSolution.splice(0, bestSolution.length, ...currentSolution);
-      bestValue = currentValue;
+      bestValue = currentSol.value;
+      bestWeight = currentSol.weight;
     }
 
     // Disturbance
@@ -78,15 +97,22 @@ function ILS(weights: number[], values: number[], maxIter: number) {
 
       disturbedSoln[j] = disturbedSoln[j] === 1 ? 0 : 1;
 
-      const disturbedVal = evaluateSolution(disturbedSoln, weights, values);
+      const disturbedSol = evaluateSolution(
+        disturbedSoln,
+        weights,
+        values,
+        PESO_LIMITE_MOCHILA
+      );
 
-      if (disturbedVal > bestValue) {
-        return { solution: disturbedSoln, value: disturbedVal };
+      if (disturbedSol.value > bestValue) {
+        return {
+          solution: { weight: disturbedSol.weight, value: disturbedSol.value },
+        };
       }
     }
   }
 
-  return { solution: bestSolution, value: bestValue };
+  return { solution: { weight: bestWeight, value: bestValue } };
 }
 
 /**
@@ -95,8 +121,9 @@ function ILS(weights: number[], values: number[], maxIter: number) {
 function evaluateSolution(
   solution: number[],
   weights: number[],
-  values: number[]
-): number {
+  values: number[],
+  PESO_LIMITE_MOCHILA: number
+): { value: number; weight: number } {
   const weightSum = solution.reduce(
     (sum, val, index) => sum + val * weights[index],
     0
@@ -104,16 +131,20 @@ function evaluateSolution(
 
   // If weight exceeds capacity then return -1
   if (weightSum > PESO_LIMITE_MOCHILA) {
-    return -1;
+    return {
+      value: -1,
+      weight: -1,
+    };
   }
 
-  return solution.reduce((sum, val, index) => sum + val * values[index], 0);
+  return {
+    weight: weightSum,
+    value: solution.reduce((sum, val, index) => sum + val * values[index], 0),
+  };
 }
 
 const main = () => {
-  const pesos = example1.map((obj) => obj.peso);
-  const ganancias = example1.map((obj) => obj.valor);
-  console.log(ILS(pesos, ganancias, 10000));
+  ILS(data, 10000000, 30);
 };
 
 main();

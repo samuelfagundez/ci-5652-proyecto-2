@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 
 const N = 500;
 
@@ -11,26 +11,26 @@ const generarEspacio = () => {
     ejemplos = ejemplos.concat(`Objeto("ejemplo${i}", ${peso}, ${valor})\n`);
     ejemplosTypescript = ejemplosTypescript.concat(
       `{ id: "ejemplo${i}", peso: ${peso}, valor: ${valor} }${
-        i === N - 1 ? "" : ",\n"
+        i === N - 1 ? '' : ',\n'
       }`
     );
   }
-  ejemplosTypescript = ejemplosTypescript.concat("]");
-  fs.unlink("./ejemplos.txt", (err) => {
+  ejemplosTypescript = ejemplosTypescript.concat(']');
+  fs.unlink('./ejemplos.txt', (err) => {
     if (err) console.error(err);
-    console.log("Archivo Eliminado Satisfactoriamente");
+    console.log('Archivo Eliminado Satisfactoriamente');
   });
-  fs.unlink("./ejemplosTypescript.txt", (err) => {
+  fs.unlink('./ejemplosTypescript.txt', (err) => {
     if (err) console.error(err);
-    console.log("Archivo Eliminado Satisfactoriamente");
+    console.log('Archivo Eliminado Satisfactoriamente');
   });
-  fs.appendFile("./ejemplos.txt", ejemplos, (err) => {
+  fs.appendFile('./ejemplos.txt', ejemplos, (err) => {
     if (err) console.error(err);
-    console.log("Archivo Creado Satisfactoriamente");
+    console.log('Archivo Creado Satisfactoriamente');
   });
-  fs.appendFile("./ejemplosTypescript.txt", ejemplosTypescript, (err) => {
+  fs.appendFile('./ejemplosTypescript.txt', ejemplosTypescript, (err) => {
     if (err) console.error(err);
-    console.log("Archivo Creado Satisfactoriamente");
+    console.log('Archivo Creado Satisfactoriamente');
   });
 };
 

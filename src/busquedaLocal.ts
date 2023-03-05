@@ -1,24 +1,4 @@
-import { example1 } from './data';
-import { Espacio, FuncionVecindad, Mochila, Objeto } from './models';
-
-// Define el valor maximo que puede albergar la mochila
-const PESO_LIMITE_MOCHILA: number = 30;
-
-const copiarMochila = (mochila: Mochila) => {
-  const nuevosObjetosRemanentes: Set<Objeto> = new Set();
-  const nuevosObjetosSeleccionados: Set<Objeto> = new Set();
-  for (const objeto of mochila.objetos_remanentes.values()) {
-    nuevosObjetosRemanentes.add(objeto);
-  }
-  for (const objeto of mochila.objetos_seleccionados.values()) {
-    nuevosObjetosSeleccionados.add(objeto);
-  }
-  return {
-    ...mochila,
-    objetos_remanentes: nuevosObjetosRemanentes,
-    objetos_seleccionados: nuevosObjetosSeleccionados,
-  } as Mochila;
-};
+import { Espacio, Mochila, Objeto } from './models';
 
 // El espacio combinatorio E es son las distintas combinaciones de seleccion de objetos dentro de la mochila
 // que respetan que la suma de sus pesos no puede superar el peso maximo.
@@ -28,7 +8,10 @@ const copiarMochila = (mochila: Mochila) => {
 // La vecindad es 1-intercambio, tomar uno de los elementos seleccionados y cambiarlo
 // El tema de este cambio es que puede abrir espacio para meter otro elemento entonces se debe chequear.
 
-const funcionVecindad = (m: Mochila): Mochila | null => {
+const funcionVecindad = (
+  m: Mochila,
+  PESO_LIMITE_MOCHILA: number
+): Mochila | null => {
   for (const objeto of m.objetos_remanentes) {
     if (objeto.peso + m.peso_total <= PESO_LIMITE_MOCHILA) {
       m.objetos_seleccionados.add(objeto);
@@ -59,7 +42,10 @@ const funcionVecindad = (m: Mochila): Mochila | null => {
   return null;
 };
 
-const generarSolucionInicial = (e: Espacio): Mochila | null => {
+const generarSolucionInicial = (
+  e: Espacio,
+  PESO_LIMITE_MOCHILA: number
+): Mochila | null => {
   const auxMochila = e[0];
   if (auxMochila) {
     for (const objeto of auxMochila.objetos_remanentes) {
@@ -78,31 +64,38 @@ const generarSolucionInicial = (e: Espacio): Mochila | null => {
   }
 };
 
-const mochila: Mochila = {
-  peso_total: 0,
-  valor_total: 0,
-  objetos_seleccionados: new Set(),
-  objetos_remanentes: new Set([...example1]),
-};
+export const busquedaLocal = (
+  data: Objeto[],
+  PESO_LIMITE_MOCHILA: number
+): {
+  solution: { value: number; weight: number };
+} => {
+  const espacio: Espacio = [
+    {
+      peso_total: 0,
+      valor_total: 0,
+      objetos_seleccionados: new Set(),
+      objetos_remanentes: new Set([...data]),
+    },
+  ];
 
-// generarSolucionInicial([copiarMochila(mochila)]);
-
-const busquedaLocal = (E: Espacio, V: FuncionVecindad): Mochila | null => {
   /** generar una solucion inicial */
-  let X = generarSolucionInicial(E);
+  let X = generarSolucionInicial(espacio, PESO_LIMITE_MOCHILA);
   if (X) {
     /** mientras haya un elemento mejor que X en V(X) entonces */
-    let VX = V(X);
+    let VX = funcionVecindad(X, PESO_LIMITE_MOCHILA);
     if (VX) {
       while (VX) {
         X = VX;
-        VX = V(VX);
+        VX = funcionVecindad(VX, PESO_LIMITE_MOCHILA);
       }
     }
-    return X;
+    return {
+      solution: { value: X.valor_total, weight: X.peso_total },
+    };
   } else {
-    return null;
+    return {
+      solution: { value: 0, weight: 0 },
+    };
   }
 };
-
-console.log(busquedaLocal([copiarMochila(mochila)], funcionVecindad));

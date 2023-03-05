@@ -1,6 +1,7 @@
 import Chromosome from './chromosome';
 import Population from './population';
-import { Bag } from './knapsack';
+import { Bag, Item } from './knapsack';
+import { Objeto } from '../models';
 
 const generateInitialPopulation = (
   population: Population,
@@ -11,21 +12,25 @@ const generateInitialPopulation = (
   }
 };
 
-export const geneticAlgorithm = ({
-  bag,
-  max_iterations_count,
-  mutation_rate,
-  generation_size,
-  cross_rate,
-}: {
-  bag: Bag;
-  max_iterations_count: number;
-  mutation_rate: number;
-  generation_size: number;
-  cross_rate: number;
-}): {
-  best: Chromosome | null;
+export const geneticAlgorithm = (
+  data: Objeto[],
+  {
+    max_iterations_count,
+    mutation_rate,
+    generation_size,
+    cross_rate,
+  }: {
+    max_iterations_count: number;
+    mutation_rate: number;
+    generation_size: number;
+    cross_rate: number;
+  },
+  PESO_LIMITE_MOCHILA: number
+): {
+  solution: { value: number; weight: number };
 } => {
+  const dataset = data.map((obj, i) => new Item(obj.peso, obj.valor, i));
+  const bag = new Bag(PESO_LIMITE_MOCHILA, dataset);
   let population = new Population(bag, mutation_rate, cross_rate);
   generateInitialPopulation(population, generation_size);
   population.calculateFitness();
@@ -42,6 +47,9 @@ export const geneticAlgorithm = ({
   }
 
   return {
-    best: population.best,
+    solution: {
+      weight: population.best?.totalWeight || 0,
+      value: population.best?.totalBenefit || 0,
+    },
   };
 };

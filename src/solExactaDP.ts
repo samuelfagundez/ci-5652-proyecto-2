@@ -1,13 +1,15 @@
-import { example1 } from './data';
-const PESO_LIMITE_MOCHILA: number = 30;
-
 type Objeto = {
   id: string;
   peso: number;
   valor: number;
 };
 
-function knapSack(objetos: Objeto[]) {
+export function solExactaDP(
+  objetos: Objeto[],
+  PESO_LIMITE_MOCHILA: number
+): {
+  solution: { value: number; weight: number };
+} {
   const beneficio = objetos.map((obj) => obj.valor);
   const pesos = objetos.map((obj) => obj.peso);
   const pesoLimite = Math.floor(PESO_LIMITE_MOCHILA);
@@ -21,7 +23,5 @@ function knapSack(objetos: Objeto[]) {
         dp[w] = Math.max(dp[w], dp[w - pesos[i - 1]] + beneficio[i - 1]);
     }
   }
-  return dp[pesoLimite]; // returning the maximum value of knapsack
+  return { solution: { value: dp[pesoLimite], weight: pesoLimite } }; // returning the maximum value of knapsack
 }
-
-console.log(knapSack(example1));
