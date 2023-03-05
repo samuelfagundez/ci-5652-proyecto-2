@@ -1,4 +1,7 @@
 import { Objeto } from './models';
+// import { example1 as data } from './data';
+
+// const PESO_LIMITE_MOCHILA = 30;
 
 // This algorithm takes as input the weights and values of each item, the capacity of the knapsack,
 // and the maximum number of iterations to run. It returns an object containing the solution with the
@@ -96,3 +99,7 @@ export function TS(
   }
   return { solution: { weight: bestWeight, value: bestValue } };
 }
+
+// const solution = TS([...data], 10000, PESO_LIMITE_MOCHILA).solution;
+
+// console.log(solution);

@@ -1,4 +1,7 @@
 import { Espacio, Mochila, Objeto } from './models';
+// import { example1 as data } from './data';
+
+// const PESO_LIMITE_MOCHILA = 30;
 
 // El espacio combinatorio E es son las distintas combinaciones de seleccion de objetos dentro de la mochila
 // que respetan que la suma de sus pesos no puede superar el peso maximo.
@@ -99,3 +102,7 @@ export const busquedaLocal = (
     };
   }
 };
+
+// const solution = busquedaLocal([...data], PESO_LIMITE_MOCHILA).solution;
+
+// console.log(solution);

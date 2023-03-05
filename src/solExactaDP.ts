@@ -1,3 +1,7 @@
+// import { example1 as data } from './data';
+
+// const PESO_LIMITE_MOCHILA = 30;
+
 type Objeto = {
   id: string;
   peso: number;
@@ -25,3 +29,7 @@ export function solExactaDP(
   }
   return { solution: { value: dp[pesoLimite], weight: pesoLimite } }; // returning the maximum value of knapsack
 }
+
+// const solution = solExactaDP([...data], PESO_LIMITE_MOCHILA).solution;
+
+// console.log(solution);

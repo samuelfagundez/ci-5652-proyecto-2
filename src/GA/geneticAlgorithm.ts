@@ -2,6 +2,9 @@ import Chromosome from './chromosome';
 import Population from './population';
 import { Bag, Item } from './knapsack';
 import { Objeto } from '../models';
+// import { example1 as data } from '../data';
+
+// const PESO_LIMITE_MOCHILA = 30;
 
 const generateInitialPopulation = (
   population: Population,
@@ -53,3 +56,20 @@ export const geneticAlgorithm = (
     },
   };
 };
+// const max_iterations_count: number = 1000;
+// const generation_size: number = 200;
+// const mutation_rate: number = 0.01;
+// const cross_rate = 0.9;
+
+// const solution = geneticAlgorithm(
+//   [...data],
+//   {
+//     max_iterations_count,
+//     generation_size,
+//     mutation_rate,
+//     cross_rate,
+//   },
+//   PESO_LIMITE_MOCHILA
+// ).solution;
+
+// console.log(solution);

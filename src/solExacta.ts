@@ -8,6 +8,22 @@ type Objeto = {
   valor: number;
 };
 
+/** Conjunto de elementos disponibles para ingresar en la mochila. */
+const elementosDisponibles: Objeto[] = [
+  { id: 'sacapuntas', peso: 1, valor: 2.5 },
+  { id: 'regla_plastico', peso: 1.5, valor: 0.5 },
+  { id: 'lapiz3', peso: 0.5, valor: 1 },
+  { id: 'boli', peso: 2, valor: 2 },
+  { id: 'carpeta', peso: 1, valor: 5 },
+  { id: 'color', peso: 1.5, valor: 1.5 },
+  { id: 'lapiz', peso: 1, valor: 1 },
+  { id: 'regla_metal', peso: 3, valor: 3 },
+  { id: 'lapiz2', peso: 1, valor: 1 },
+  { id: 'hojas', peso: 0.2, valor: 0.7 },
+  { id: 'boli2', peso: 0.8, valor: 2 },
+  { id: 'borra', peso: 3.5, valor: 1 },
+];
+
 /** Instancia inicial de la mochila.
  *
  * Las mochilas serán usadas como estados de la toma de decisiones.
@@ -23,6 +39,12 @@ type Mochila = {
   valor_total: number;
   objetos_seleccionados: Set<Objeto>;
   objetos_remanentes: Set<Objeto>;
+};
+const mochila: Mochila = {
+  peso_total: 0,
+  valor_total: 0,
+  objetos_seleccionados: new Set(),
+  objetos_remanentes: new Set([...elementosDisponibles]),
 };
 
 /** Para evitar errores de referencias generamos referencias de objetos_remanentes y objetos_seleccionados
@@ -47,17 +69,7 @@ const copiarMochila = (mochila: Mochila) => {
 // Este es el output
 let mochilas_terminadas: Mochila[] = [];
 
-export const solExacta = (
-  data: Objeto[]
-): {
-  solution: { value: number; weight: number };
-} => {
-  const mochila: Mochila = {
-    peso_total: 0,
-    valor_total: 0,
-    objetos_seleccionados: new Set(),
-    objetos_remanentes: new Set([...data]),
-  };
+const main = (): void => {
   /** Iniciamos un arreglo de mochilas que será un arreglo
    * de estados para ir tomando las decisiones de ir seleccionando
    * todos los elementos en todas las posibles combinaciones.
@@ -163,11 +175,28 @@ export const solExacta = (
   const valorMaximo = mochilasDeValorMaximoYPesoMinimo[0].valor_total;
   /** Peso solucion para las mochilas */
   const pesoMinimo = mochilasDeValorMaximoYPesoMinimo[0].peso_total;
-
-  return {
-    solution: {
-      weight: valorMaximo,
-      value: pesoMinimo,
-    },
-  };
+  /** Objetos a seleccionar para la solucion (repetidos)
+   *  Formateados a string para ser impresos
+   */
+  const soluciones = mochilasDeValorMaximoYPesoMinimo
+    .map((mochila) => [...mochila.objetos_seleccionados])
+    .map((solucion) =>
+      solucion
+        .map((objeto) => objeto.id)
+        .sort()
+        .join(',')
+    );
+  /** Soluciones sin repetir */
+  let solucionesFinales: Set<string> = new Set();
+  for (const solucion of soluciones) {
+    solucionesFinales.add(solucion);
+  }
+  // Print resultado
+  console.log('Resultado:');
+  console.log('Valor máximo:', valorMaximo);
+  console.log('Peso mínimo:', pesoMinimo);
+  console.log('cantidad de estados finales', mochilas_terminadas.length);
+  console.log('objetos finales', [...solucionesFinales]);
 };
+
+// main();

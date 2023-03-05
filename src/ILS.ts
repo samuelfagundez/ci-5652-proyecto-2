@@ -1,5 +1,7 @@
-import { example1 as data } from './data';
+// import { example1 as data } from './data';
 import { Objeto } from './models';
+
+// const PESO_LIMITE_MOCHILA = 30;
 
 // This algorithm takes as input the weights and values of each item, the capacity of the knapsack, and
 // the maximum number of iterations to run. It returns an object containing the solution with the
@@ -143,8 +145,6 @@ function evaluateSolution(
   };
 }
 
-const main = () => {
-  ILS(data, 10000000, 30);
-};
+// const solution = ILS([...data], 10000, PESO_LIMITE_MOCHILA).solution;
 
-main();
+// console.log(solution);
