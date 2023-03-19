@@ -3,6 +3,7 @@ import { ILS } from './ILS';
 import { solExactaDP } from './solExactaDP';
 import { TS } from './tabuSearch';
 import { geneticAlgorithm } from './GA/geneticAlgorithm';
+import { memetic } from './memetic/memetic';
 import { Objeto } from './models';
 
 const NUMERO_DE_OBJETOS = 250;
@@ -19,9 +20,12 @@ const ITERACIONES = 1;
 const maxIterILS = 10000;
 // TS
 const maxIterTS = 10000;
-//GA
+//GA & Memetic
+/** Cota de iteraciones. */
 const max_iterations_count: number = 1000;
+/** Tamaño de la poblacion inicial */
 const generation_size: number = 200;
+/** Indice de cruce */
 const cross_rate = 0.9;
 
 const tiemposDP: number[] = [];
@@ -29,6 +33,7 @@ const tiemposLS: number[] = [];
 const tiemposILS: number[] = [];
 const tiemposTS: number[] = [];
 const tiemposGA: number[] = [];
+const tiemposMeme: number[] = [];
 
 const benchmark = () => {
   // Init
@@ -106,12 +111,30 @@ const benchmark = () => {
     console.log('Tiempo (s): ', (t1 - t0) / 1000);
     console.log('Peso: ', solution.weight);
     console.log('Valor: ', solution.value);
+    // Memetic Algorithm
+    console.log('Corrida de solucion con Memetic:');
+    t0 = new Date().getTime();
+    solution = memetic(
+      [...data],
+      {
+        max_iterations_count,
+        generation_size,
+        cross_rate,
+      },
+      PESO_LIMITE_MOCHILA
+    ).solution;
+    t1 = new Date().getTime();
+    tiemposMeme.push((t1 - t0) / 1000);
+    console.log('Tiempo (s): ', (t1 - t0) / 1000);
+    console.log('Peso: ', solution.weight);
+    console.log('Valor: ', solution.value);
   }
-  console.log('Tiempos DP: ', tiemposDP);
-  console.log('Tiempos LS: ', tiemposLS);
-  console.log('Tiempos ILS: ', tiemposILS);
-  console.log('Tiempos TS: ', tiemposTS);
-  console.log('Tiempos GA: ', tiemposGA);
+  // console.log('Tiempos DP: ', tiemposDP);
+  // console.log('Tiempos LS: ', tiemposLS);
+  // console.log('Tiempos ILS: ', tiemposILS);
+  // console.log('Tiempos TS: ', tiemposTS);
+  // console.log('Tiempos GA: ', tiemposGA);
+  // console.log('Tiempos Memetic: ', tiemposMeme);
 };
 
 benchmark();
