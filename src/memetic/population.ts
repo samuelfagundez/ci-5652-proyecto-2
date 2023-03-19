@@ -39,16 +39,22 @@ class Population {
 
   generate = (): void => {
     let newPopulation: Chromosome[] = [];
-    let i: number = 0;
-    for (; i < this.population.length; i++) {
+    for (let i = 0; i < this.population.length; i++) {
       if (Math.random() <= this.crossRate) {
         let partnerA = this.naturalSelection();
         let partnerB = this.naturalSelection();
+        let partnerC = this.naturalSelection();
         // do cross over
-        if (partnerA && partnerB) {
-          let child = partnerA.crossoverRandom(partnerB);
+        if (partnerA && partnerB && partnerC) {
+          const child = partnerA.crossoverUniform(partnerB, partnerC);
           // add obtained child
-          newPopulation[i] = child;
+          if (child && child.genes) {
+            newPopulation[i] = child;
+          } else {
+            newPopulation[i] = this.population[i];
+          }
+        } else {
+          newPopulation[i] = this.population[i];
         }
       } else {
         newPopulation[i] = this.population[i];
