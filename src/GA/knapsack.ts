@@ -24,8 +24,8 @@ class Item {
 class Bag {
   size: number;
   itemSet: Item[];
-  constructor(size: number, itemSet: Item[]) {
-    this.size = size;
+  constructor(maxSize: number, itemSet: Item[]) {
+    this.size = maxSize;
     this.itemSet = [...itemSet];
   }
 
@@ -59,38 +59,12 @@ class Bag {
   };
 
   calculateRemainingSpace = (itemSet: Item[]): number => {
-    return this.size - this.getValueForList(itemSet);
-  };
-
-  printSolution = (
-    itemSet: Item[]
-  ): {
-    bestValue: number;
-    itemSet: Item[];
-  } => {
-    return {
-      bestValue: this.getValueForList(itemSet),
-      itemSet: itemSet,
-    };
+    return this.size - this.getWeightForList(itemSet);
   };
 }
 
 function getRandomAsInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + +min);
 }
-
-(Array.prototype as any).clone = function () {
-  return this.slice(0);
-};
-
-(Array.prototype as any).removeItem = function (index: number) {
-  let i = 0;
-  while (i < this.length) {
-    if (i === index) {
-      this.splice(i, 1);
-    }
-    i++;
-  }
-};
 
 export { Bag, Item };

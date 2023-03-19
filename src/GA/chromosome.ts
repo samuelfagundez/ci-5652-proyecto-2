@@ -8,9 +8,9 @@ class Chromosome {
   totalWeight: number;
   totalBenefit: number;
   constructor(bag: Bag) {
-    this.bag = bag;
-    this.genes = []; // valufes of the gene (0,...1)
-    this.items = bag.itemSet; // hold current items
+    this.bag = { ...bag };
+    this.genes = []; // values of the gene (0,...1)
+    this.items = [...bag.itemSet]; // hold current items
     this.fitness = 0; // fitness of this gene
     this.totalWeight = 0; // total weight of gene
     this.totalBenefit = 0; // total benefits by this gene
@@ -63,19 +63,6 @@ class Chromosome {
       else child.genes[i] = partner.genes[i];
     }
     return child;
-  };
-
-  // Based on a mutation probability, picks a new random character
-  mutate = (mutationRate: number) => {
-    for (let i = 0; i < this.genes.length; i++) {
-      if (Math.random() < mutationRate) {
-        if (this.genes[i] == 1) {
-          this.genes[i] = 0;
-        } else {
-          this.genes[i] = 1;
-        }
-      }
-    }
   };
 }
 

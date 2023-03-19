@@ -10,6 +10,8 @@
 		"busquedaLocal": "ts-node ./src/busquedaLocal.ts",
 		"ILS": "ts-node ./src/ILS.ts",
 		"genetic": "ts-node ./src/GA/geneticAlgorithm.ts",
+		"memetico": "ts-node ./src/memetico/memetico.ts",
+		"hormigas": "ts-node ./src/hormigas/hormigas.ts",
 		"benchmark": "ts-node ./src/benchmark.ts",
 		"generarEjemplos": "ts-node ./src/generarEspacio.ts"
 	},

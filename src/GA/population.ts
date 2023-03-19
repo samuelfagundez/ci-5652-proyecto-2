@@ -3,21 +3,17 @@ import { Bag } from './knapsack';
 
 class Population {
   population: Chromosome[];
-  mutationRate: number;
   crossRate: number;
   bag: Bag;
   totalBenefit: number;
   best: Chromosome | null;
-  secondBest: Chromosome | null;
 
-  constructor(bag: Bag, mutation_rate: number, cross_rate: number) {
+  constructor(bag: Bag, cross_rate: number) {
     this.population = []; // Array to hold the current population
-    this.mutationRate = mutation_rate;
     this.crossRate = cross_rate;
     this.bag = bag;
     this.totalBenefit = 0;
     this.best = null;
-    this.secondBest = null;
   }
 
   // Fill our fitness array with a value for every member of the population
@@ -44,7 +40,6 @@ class Population {
   generate = (): void => {
     let newPopulation: Chromosome[] = [];
     let i: number = 0;
-    // Refill the population with children from the mating pool
     for (; i < this.population.length; i++) {
       if (Math.random() <= this.crossRate) {
         let partnerA = this.naturalSelection();
@@ -52,8 +47,6 @@ class Population {
         // do cross over
         if (partnerA && partnerB) {
           let child = partnerA.crossoverRandom(partnerB);
-          // do mutation
-          child.mutate(this.mutationRate);
           // add obtained child
           newPopulation[i] = child;
         }
@@ -66,11 +59,10 @@ class Population {
   };
 
   isNintyPercentTheSame = () => {
-    let arr: Chromosome[] = this.population;
     let dupsCount: number[] = [];
-    let nintyPercentCount: number = arr.length * 0.9;
+    let nintyPercentCount: number = this.population.length * 0.9;
 
-    for (const element of arr) {
+    for (const element of this.population) {
       if (typeof dupsCount[element.fitness] === 'undefined') {
         dupsCount[element.fitness] = 0;
       } else {
@@ -89,21 +81,17 @@ class Population {
   evaluate = () => {
     let worldrecord1 = 0;
     let worldrecord2 = 0;
-    let index1 = 0;
-    let index2 = 0;
+    let index = 0;
     for (let i = 0; i < this.population.length; i++) {
       if (this.population[i].fitness > worldrecord1) {
         worldrecord2 = worldrecord1;
-        index2 = index1;
-        index1 = i;
+        index = i;
         worldrecord1 = this.population[i].fitness;
       } else if (this.population[i].fitness > worldrecord2) {
-        index2 = i;
         worldrecord2 = this.population[i].fitness;
       }
     }
-    this.best = this.population[index1];
-    this.secondBest = this.population[index2];
+    this.best = this.population[index];
   };
 }
 
