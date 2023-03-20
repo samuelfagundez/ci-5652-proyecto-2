@@ -5,16 +5,17 @@ import { TS } from './tabuSearch';
 import { geneticAlgorithm } from './GA/geneticAlgorithm';
 import { memetic } from './memetic/memetic';
 import { Objeto } from './models';
+import { hormigas } from './hormigas/hormigas';
 
-const NUMERO_DE_OBJETOS = 500;
-const ITEM_MINIMO_VALOR = 10;
-const ITEM_MAXIMO_VALOR = 60;
+const NUMERO_DE_OBJETOS = 30;
+const ITEM_MINIMO_VALOR = 1;
+const ITEM_MAXIMO_VALOR = 30;
 const ITEM_MINIMO_PESO = 2;
-const ITEM_MAXIMO_PESO = 20;
+const ITEM_MAXIMO_PESO = 10;
 const PESO_LIMITE_MOCHILA = 50;
 
 // Corrida
-const ITERACIONES = 20;
+const ITERACIONES = 10;
 
 // ILS
 const maxIterILS = 10000;
@@ -27,6 +28,9 @@ const max_iterations_count: number = 10000;
 const generation_size: number = 500;
 /** Indice de cruce */
 const cross_rate = 0.9;
+//Hormigas
+const maxIterHormigas = 10000;
+const antsAmount = 200;
 
 const tiemposDP: number[] = [];
 const solsDP: number[] = [];
@@ -39,6 +43,8 @@ const tiemposGA: number[] = [];
 const solsGA: number[] = [];
 const tiemposMeme: number[] = [];
 const solsMeme: number[] = [];
+const tiemposHormigas: number[] = [];
+const solsHormigas: number[] = [];
 
 const benchmark = () => {
   // Init
@@ -138,7 +144,23 @@ const benchmark = () => {
     console.log('Tiempo (s): ', (t1 - t0) / 1000);
     console.log('Peso: ', solution.weight);
     console.log('Valor: ', solution.value);
+    // Hormigas
+    console.log('Corrida de solucion con Hormigas:');
+    t0 = new Date().getTime();
+    t1 = new Date().getTime();
+    tiemposHormigas.push((t1 - t0) / 1000);
+    solution = hormigas(
+      [...data],
+      antsAmount,
+      PESO_LIMITE_MOCHILA,
+      maxIterHormigas
+    ).solution;
+    solsHormigas.push(solution.value);
+    console.log('Tiempo (s): ', (t1 - t0) / 1000);
+    console.log('Peso: ', solution.weight);
+    console.log('Valor: ', solution.value);
   }
+
   console.log('Tiempos DP: ', tiemposDP);
   console.log('Soluciones DP: ', solsDP);
   console.log('Tiempos LS: ', tiemposLS);
@@ -151,6 +173,8 @@ const benchmark = () => {
   console.log('Soluciones GA: ', solsGA);
   console.log('Tiempos Memetic: ', tiemposMeme);
   console.log('Soluciones Memetic: ', solsMeme);
+  console.log('Tiempos Hormigas: ', tiemposHormigas);
+  console.log('Soluciones Hormigas: ', solsHormigas);
 };
 
 benchmark();
