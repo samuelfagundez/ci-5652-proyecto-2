@@ -1,4 +1,5 @@
 import { Objeto } from '../models';
+
 class Item {
   value: number;
   weight: number;
@@ -8,29 +9,37 @@ class Item {
   }
 }
 
+let pheromones: number[] = [];
+
 class Ant {
   items: Item[];
   capacity: number;
   constructor(items: Item[], capacity: number) {
-    this.items = items;
+    this.items = [...items];
     this.capacity = capacity;
   }
 
   findSolution(): number[] {
+    /** lo que va a tomar en este camino */
     const pickedItems: number[] = new Array(this.items.length).fill(0);
-    const pheromones: number[] = new Array(this.items.length).fill(1);
 
-    for (let i = 0; i < this.items.length; i++) {
-      const decision = Math.random() < pheromones[i] ? 1 : 0;
-      if (decision) {
-        if (this.capacity - this.items[i].weight >= 0) {
-          this.capacity -= this.items[i].weight;
-          pickedItems[i] = 1;
+    for (let i = 0; i < this.items.length * 5; i++) {
+      const getRandomIndex = Math.floor(Math.random() * this.items.length);
+      if (
+        Math.random() <
+          pheromones[getRandomIndex] *
+            (this.items[getRandomIndex].value /
+              this.items[getRandomIndex].weight) &&
+        !pickedItems[getRandomIndex]
+      ) {
+        /** si toma actualiza q tomo y dice cuanto espacio le queda disponible. */
+        if (this.capacity - this.items[getRandomIndex].weight >= 0) {
+          this.capacity -= this.items[getRandomIndex].weight;
+          pickedItems[getRandomIndex] = 1;
         }
       }
     }
-
-    return pickedItems;
+    return [...pickedItems];
   }
 }
 
@@ -38,45 +47,40 @@ function antColonyOptimization(
   items: Item[],
   capacity: number,
   antsCount: number,
-  iterations: number
+  iterations: number,
+  evaporationRate: number
 ): number[] {
-  const ants: Ant[] = new Array(antsCount).fill(new Ant(items, capacity));
-  const pheromones: number[] = new Array(items.length).fill(1);
+  // creamos un grupo de hormigas donde cada hormiga puede ver todos los objetos y se le configura la capacidad maxima
+  const ants: Ant[] = new Array(antsCount).fill(new Ant([...items], capacity));
+
+  pheromones = new Array(items.length).fill(0.1);
 
   let bestSolution: number[] = [];
   let bestValue = 0;
 
+  // Iteramos un numero definido de veces (cota superior)
   for (let iter = 0; iter < iterations; iter++) {
-    const solutions: number[][] = ants.map((ant) => ant.findSolution());
+    // Para cada hormiga encontramos la solucion
+    const solutions: number[][] = ants.map((ant) => [...ant.findSolution()]);
 
+    // se itera sobre la solucion de cada hormiga
     for (const solution of solutions) {
+      /** se calcula la ganancia de la solucion actual */
       const value = solution.reduce(
         (acc, curr, index) => acc + (curr ? items[index].value : 0),
         0
       );
-      const weight = solution.reduce(
-        (acc, curr, index) => acc + (curr ? items[index].weight : 0),
-        0
-      );
 
-      if (weight <= capacity && value > bestValue) {
-        bestSolution = solution;
-        bestValue = value;
+      for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+        pheromones[itemIndex] *= 1 - evaporationRate;
       }
-    }
 
-    for (const solution of solutions) {
-      const value = solution.reduce(
-        (acc, curr, index) => acc + (curr ? items[index].value : 0),
-        0
-      );
-      const weight = solution.reduce(
-        (acc, curr, index) => acc + (curr ? items[index].weight : 0),
-        0
-      );
-
-      if (weight <= capacity) {
+      // y la ganancia se mejora
+      if (value > bestValue) {
+        bestSolution = [...solution];
+        bestValue = value;
         for (let i = 0; i < items.length; i++) {
+          // Si tomar un objeto es solucion entonces actualizamos la feromona de esa solucion
           if (solution[i]) {
             pheromones[i] += value / bestValue;
           }
@@ -85,14 +89,15 @@ function antColonyOptimization(
     }
   }
 
-  return bestSolution;
+  return [...bestSolution];
 }
 
 export const hormigas = (
   data: Objeto[],
   antsAmount: number,
   PESO_LIMITE_MOCHILA: number,
-  iterations: number
+  iterations: number,
+  evaporationRate: number
 ): {
   solution: { value: number; weight: number };
 } => {
@@ -101,7 +106,8 @@ export const hormigas = (
     items,
     PESO_LIMITE_MOCHILA,
     antsAmount,
-    iterations
+    iterations,
+    evaporationRate
   );
   let valor = 0;
   let peso = 0;

@@ -30,7 +30,8 @@ const generation_size: number = 500;
 const cross_rate = 0.9;
 //Hormigas
 const maxIterHormigas = 10000;
-const antsAmount = 200;
+const antsAmount = 300;
+const evaporationRate = 0.1;
 
 const tiemposDP: number[] = [];
 const solsDP: number[] = [];
@@ -147,14 +148,26 @@ const benchmark = () => {
     // Hormigas
     console.log('Corrida de solucion con Hormigas:');
     t0 = new Date().getTime();
-    t1 = new Date().getTime();
-    tiemposHormigas.push((t1 - t0) / 1000);
+    // Hormigas
     solution = hormigas(
       [...data],
       antsAmount,
       PESO_LIMITE_MOCHILA,
-      maxIterHormigas
+      maxIterHormigas,
+      evaporationRate
     ).solution;
+    t1 = new Date().getTime();
+    tiemposHormigas.push((t1 - t0) / 1000);
+    // Hormigas 2
+    // solution = hormigas(
+    //   [...data],
+    //   PESO_LIMITE_MOCHILA,
+    //   antsAmount,
+    //   maxIterHormigas,
+    //   alpha,
+    //   beta,
+    //   evaporationRate
+    // ).solution;
     solsHormigas.push(solution.value);
     console.log('Tiempo (s): ', (t1 - t0) / 1000);
     console.log('Peso: ', solution.weight);
