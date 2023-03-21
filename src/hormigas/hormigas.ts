@@ -69,9 +69,6 @@ function antColonyOptimization(
   for (let iter = 0; iter < iterations; iter++) {
     // Para cada hormiga encontramos la solucion
     const solutions: number[][] = ants.map((ant) => [...ant.findSolution()]);
-    if (iter === 3999) {
-      console.log(solutions);
-    }
     // se itera sobre la solucion de cada hormiga
     for (const solution of solutions) {
       /** se calcula la ganancia de la solucion actual */
@@ -81,10 +78,6 @@ function antColonyOptimization(
         if (solution[i]) {
           value += items[i].value;
         }
-      }
-
-      if (value !== 0) {
-        console.log(solution);
       }
 
       // y la ganancia se mejora
