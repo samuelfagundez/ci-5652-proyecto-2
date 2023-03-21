@@ -8,14 +8,14 @@ import { Objeto } from './models';
 import { hormigas } from './hormigas/hormigas';
 
 const NUMERO_DE_OBJETOS = 30;
-const ITEM_MINIMO_VALOR = 1;
+const ITEM_MINIMO_VALOR = 6;
 const ITEM_MAXIMO_VALOR = 30;
 const ITEM_MINIMO_PESO = 2;
-const ITEM_MAXIMO_PESO = 10;
+const ITEM_MAXIMO_PESO = 15;
 const PESO_LIMITE_MOCHILA = 50;
 
 // Corrida
-const ITERACIONES = 10;
+const ITERACIONES = 1;
 
 // ILS
 const maxIterILS = 10000;
@@ -29,9 +29,9 @@ const generation_size: number = 500;
 /** Indice de cruce */
 const cross_rate = 0.9;
 //Hormigas
-const maxIterHormigas = 10000;
-const antsAmount = 300;
-const evaporationRate = 0.1;
+const maxIterHormigas = 4000;
+const antsAmount = 100;
+const evaporationRate = 0.000005;
 
 const tiemposDP: number[] = [];
 const solsDP: number[] = [];
@@ -154,20 +154,11 @@ const benchmark = () => {
       antsAmount,
       PESO_LIMITE_MOCHILA,
       maxIterHormigas,
-      evaporationRate
+      evaporationRate,
+      ITEM_MINIMO_VALOR
     ).solution;
     t1 = new Date().getTime();
     tiemposHormigas.push((t1 - t0) / 1000);
-    // Hormigas 2
-    // solution = hormigas(
-    //   [...data],
-    //   PESO_LIMITE_MOCHILA,
-    //   antsAmount,
-    //   maxIterHormigas,
-    //   alpha,
-    //   beta,
-    //   evaporationRate
-    // ).solution;
     solsHormigas.push(solution.value);
     console.log('Tiempo (s): ', (t1 - t0) / 1000);
     console.log('Peso: ', solution.weight);

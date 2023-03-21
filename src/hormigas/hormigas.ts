@@ -14,16 +14,18 @@ let pheromones: number[] = [];
 class Ant {
   items: Item[];
   capacity: number;
-  constructor(items: Item[], capacity: number) {
+  minItemValue: number;
+  constructor(items: Item[], capacity: number, minItemValue: number) {
     this.items = [...items];
     this.capacity = capacity;
+    this.minItemValue = minItemValue;
   }
 
   findSolution(): number[] {
     /** lo que va a tomar en este camino */
     const pickedItems: number[] = new Array(this.items.length).fill(0);
 
-    for (let i = 0; i < this.items.length * 5; i++) {
+    while (this.capacity >= this.minItemValue) {
       const getRandomIndex = Math.floor(Math.random() * this.items.length);
       if (
         Math.random() <
@@ -48,10 +50,15 @@ function antColonyOptimization(
   capacity: number,
   antsCount: number,
   iterations: number,
-  evaporationRate: number
+  evaporationRate: number,
+  minItemValue: number
 ): number[] {
   // creamos un grupo de hormigas donde cada hormiga puede ver todos los objetos y se le configura la capacidad maxima
-  const ants: Ant[] = new Array(antsCount).fill(new Ant([...items], capacity));
+  let ants: Ant[] = [];
+
+  for (let i = 0; i < antsCount; i++) {
+    ants = [...ants, new Ant([...items], capacity, minItemValue)];
+  }
 
   pheromones = new Array(items.length).fill(0.1);
 
@@ -62,17 +69,22 @@ function antColonyOptimization(
   for (let iter = 0; iter < iterations; iter++) {
     // Para cada hormiga encontramos la solucion
     const solutions: number[][] = ants.map((ant) => [...ant.findSolution()]);
-
+    if (iter === 3999) {
+      console.log(solutions);
+    }
     // se itera sobre la solucion de cada hormiga
     for (const solution of solutions) {
       /** se calcula la ganancia de la solucion actual */
-      const value = solution.reduce(
-        (acc, curr, index) => acc + (curr ? items[index].value : 0),
-        0
-      );
+      let value = 0;
 
-      for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-        pheromones[itemIndex] *= 1 - evaporationRate;
+      for (let i = 0; i < items.length; i++) {
+        if (solution[i]) {
+          value += items[i].value;
+        }
+      }
+
+      if (value !== 0) {
+        console.log(solution);
       }
 
       // y la ganancia se mejora
@@ -87,6 +99,9 @@ function antColonyOptimization(
         }
       }
     }
+    // for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+    //   pheromones[itemIndex] -= evaporationRate;
+    // }
   }
 
   return [...bestSolution];
@@ -97,7 +112,8 @@ export const hormigas = (
   antsAmount: number,
   PESO_LIMITE_MOCHILA: number,
   iterations: number,
-  evaporationRate: number
+  evaporationRate: number,
+  minItemValue: number
 ): {
   solution: { value: number; weight: number };
 } => {
@@ -107,7 +123,8 @@ export const hormigas = (
     PESO_LIMITE_MOCHILA,
     antsAmount,
     iterations,
-    evaporationRate
+    evaporationRate,
+    minItemValue
   );
   let valor = 0;
   let peso = 0;
@@ -117,6 +134,7 @@ export const hormigas = (
       peso += data[i].peso;
     }
   }
+  console.log('solucion', solution);
 
   return {
     solution: {
